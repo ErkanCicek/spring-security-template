@@ -5,13 +5,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
-public class User {
-    
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+public class User{
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long uid;
@@ -19,5 +19,5 @@ public class User {
     private String username;
     private String email;
     private String password;
-    
+    private String role;    
 }

@@ -2,9 +2,21 @@ package com.erkan.springauthservice.service;
 
 import org.springframework.stereotype.Service;
 
+import com.erkan.springauthservice.entity.User;
+import com.erkan.springauthservice.repo.UserRepo;
 import com.erkan.springauthservice.service.impl.UserServiceImpl;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserServiceImpl{
+
+    private final UserRepo userRepo;
+    
+    @Override
+    public User findByUsername(String username) {
+        return userRepo.findByUsername(username);
+    }
     
 }
