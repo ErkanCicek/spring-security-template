@@ -1,5 +1,7 @@
 package com.erkan.springauthservice.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.erkan.springauthservice.entity.User;
@@ -17,7 +19,7 @@ public class UserService implements UserServiceImpl{
     private final UserRepo userRepo;
     
     @Override
-    public User findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return userRepo.findByUsername(username);
     }
     
