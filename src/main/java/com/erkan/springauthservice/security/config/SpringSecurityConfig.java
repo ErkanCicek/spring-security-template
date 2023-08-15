@@ -2,17 +2,18 @@ package com.erkan.springauthservice.security.config;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import com.erkan.springauthservice.security.CustomUserDetailsService;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.erkan.springauthservice.security.JwtAuthFilter;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -21,8 +22,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SpringSecurityConfig {
 
-    private final CustomUserDetailsService customUserDetailsService; 
-    private final PasswordEncoder passwordEncoder;
+  private final AuthenticationProvider authenticationProvider;
+    private final JwtAuthFilter jwtAuthFilter;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -34,12 +36,8 @@ public class SpringSecurityConfig {
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")     
                 .anyRequest().authenticated()
        ).sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+       .authenticationProvider(authenticationProvider)
+       .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
        .httpBasic(Customizer.withDefaults()).build();
     }
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder builder) throws Exception {
-       builder.userDetailsService(customUserDetailsService)
-               .passwordEncoder(passwordEncoder);
-   }
 }
