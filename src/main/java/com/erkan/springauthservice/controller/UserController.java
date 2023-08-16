@@ -1,18 +1,15 @@
 package com.erkan.springauthservice.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.erkan.springauthservice.dto.AuthenticationRequest;
 import com.erkan.springauthservice.dto.AuthenticationResponse;
-import com.erkan.springauthservice.repo.UserRepo;
-import com.erkan.springauthservice.util.JwtUtil;
+import com.erkan.springauthservice.dto.RegisterDto;
+import com.erkan.springauthservice.dto.UsernameEmailCheckResponseDto;
+import com.erkan.springauthservice.service.AuthenticationService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,42 +17,28 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final AuthenticationManager authenticationManager;
-    private final UserRepo repository;
-    private final JwtUtil jwtUtil;
+    private final AuthenticationService authenticationService;
 
-    //testing
-    @GetMapping("/user/hi")
-    public String hiUser(){
-        return "hiUser";
-    }
-
-    @GetMapping("/admin/hi")
-    public String hiAdmin(){
-        return "hiAdmin";
-    }
-
-    @GetMapping("/")
-    public String hiGuest(@RequestParam String username){
-       return username;
-    }
-
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request){
-        return ResponseEntity.ok(authenticate(request));
+        return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-    authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(
-            request.username(),
-            request.password()
-        )
-    );
-    var user = repository.findByUsername(request.username())
-        .orElseThrow();
-    var jwtToken = jwtUtil.generateToken(user);
-    return new AuthenticationResponse(jwtToken);
-  }
+    @PostMapping("/signup")
+    public ResponseEntity<UsernameEmailCheckResponseDto> signup(@RequestBody RegisterDto userInfo){
+        //1 check if username and email is ok to use aka not taken
+        //2 register user or send error if abovce not false
+
+        UsernameEmailCheckResponseDto availability = 
+            authenticationService.checkUsernameEmailAvailability(userInfo.username(), userInfo.email());
+
+        if(availability.usernameTaken() || availability.emailTaken()){
+            return ResponseEntity.status(409).body(availability);
+        }
+        else{
+            authenticationService.register(userInfo);
+            return ResponseEntity.ok(null);
+        }
+    }   
 }

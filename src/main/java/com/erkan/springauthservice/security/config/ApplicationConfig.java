@@ -13,10 +13,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.erkan.springauthservice.service.UserService;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Configuration
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ApplicationConfig {
 
     private final UserService userService;

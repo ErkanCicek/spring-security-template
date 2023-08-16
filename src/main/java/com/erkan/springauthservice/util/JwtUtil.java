@@ -1,7 +1,7 @@
 package com.erkan.springauthservice.util;
 
 import java.security.Key;
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +38,7 @@ public class JwtUtil {
       Map<String, Object> extraClaims,
       UserDetails userDetails
   ) {
-    return buildToken(extraClaims, userDetails, TimeUnit.HOURS.toMillis(1));
+    return buildToken(extraClaims, userDetails, TimeUnit.SECONDS.toMillis(50));
   }
 
   public String generateRefreshToken(
