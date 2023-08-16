@@ -5,7 +5,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class SpringSecurityConfig {
 
   private final AuthenticationProvider authenticationProvider;
-    private final JwtAuthFilter jwtAuthFilter;
+  private final JwtAuthFilter jwtAuthFilter;
 
 
     @Bean
@@ -31,13 +30,14 @@ public class SpringSecurityConfig {
        return http.csrf(crsf -> crsf.disable())
        .authorizeHttpRequests(authorize 
             -> authorize
-                .requestMatchers("/").permitAll()
-                .requestMatchers("/user/**").hasAnyAuthority("ADMIN", "USER")    
-                .requestMatchers("/admin/**").hasAuthority("ADMIN")     
+                .requestMatchers("/login").permitAll()
+                .requestMatchers("/signup").permitAll()
+                .requestMatchers("/test").permitAll()
                 .anyRequest().authenticated()
        ).sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
        .authenticationProvider(authenticationProvider)
        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-       .httpBasic(Customizer.withDefaults()).build();
+       .httpBasic(h -> h.disable())
+       .build();
     }
 }

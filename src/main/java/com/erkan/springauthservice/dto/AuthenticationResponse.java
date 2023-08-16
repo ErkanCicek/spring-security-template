@@ -1,5 +1,5 @@
 package com.erkan.springauthservice.dto;
 
-public record AuthenticationResponse(String access_token) {
+public record AuthenticationResponse(String accessToken, String refreshToken) {
     
 }
