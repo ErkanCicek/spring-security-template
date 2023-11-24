@@ -32,7 +32,7 @@ public class SpringSecurityConfig {
             -> authorize
                 .requestMatchers("/login").permitAll()
                 .requestMatchers("/signup").permitAll()
-                .requestMatchers("/test").permitAll()
+                .requestMatchers("/test").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
        ).sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
        .authenticationProvider(authenticationProvider)

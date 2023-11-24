@@ -9,3 +9,6 @@ spring:
     username: testauthuser
     password: 123
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 9090
